@@ -80,7 +80,7 @@ class ConductorMod {
       "ede",
       "eee",
       Character.valueOf('e'),
-      fConductor,
+      eConductor,
       Character.valueOf('d'),
       Items.diamond)
     GameRegistry.addShapedRecipe(new ItemStack(anchor, 8),
