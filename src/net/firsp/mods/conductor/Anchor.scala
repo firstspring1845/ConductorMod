@@ -11,7 +11,7 @@ import net.minecraftforge.common.ForgeChunkManager.{Type, Ticket}
 
 import scala.collection.JavaConversions._
 
-class BlockAnchor extends Block(Material.air) {
+class BlockAnchor extends Block(Material.glass) {
   setHardness(0.3F)
   setStepSound(Block.soundTypeGlass)
   setCreativeTab(CreativeTabs.tabTransport)
