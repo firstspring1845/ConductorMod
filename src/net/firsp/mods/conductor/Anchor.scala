@@ -35,7 +35,7 @@ class BlockAnchor extends Block(Material.glass) {
     ChainableTag.of(validTicket.getModData).integer("x",x).integer("y",y).integer("z",z)
     val chunkX = x >> 4
     val chunkZ = z >> 4
-    for (xx <- (x - 1 to x + 1).toList; zz <- (z - 1 to z + 1).toList) {
+    for (xx <- (chunkX - 1 to chunkX + 1).toList; zz <- (chunkZ - 1 to chunkZ + 1).toList) {
       ForgeChunkManager.forceChunk(validTicket, new ChunkCoordIntPair(xx, zz))
     }
   }
