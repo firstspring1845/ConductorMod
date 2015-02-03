@@ -1,7 +1,10 @@
 package net.firsp.mods.conductor
 
 import cofh.api.energy.IEnergyHandler
+import net.firsp.lib.ChainableTag
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.network.{Packet, NetworkManager}
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity
 import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.common.util.ForgeDirection
 
@@ -39,6 +42,7 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
   }
 
   override def updateEntity = {
+    if(!worldObj.isRemote) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
     ForgeDirection.VALID_DIRECTIONS.foreach(o => {
       getWorldObj().getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ) match {
         case to: TileEnergyConductor => transferEnergy(to)
@@ -56,6 +60,11 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
     }
   }
 
+  override def getDescriptionPacket: Packet = new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, ChainableTag.newInstance.integer("e",internalEnergy).as)
+
+  override def onDataPacket(net: NetworkManager, pkt: S35PacketUpdateTileEntity): Unit = {
+    internalEnergy = pkt.func_148857_g.getInteger("e")
+  }
 }
 
 class TileTeleportEnergyConductor extends TileEnergyConductor with TeleportableTile {

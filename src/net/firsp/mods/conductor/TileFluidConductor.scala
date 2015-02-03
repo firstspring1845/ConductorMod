@@ -1,6 +1,9 @@
 package net.firsp.mods.conductor
 
+import net.firsp.lib.ChainableTag
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.network.{Packet, NetworkManager}
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity
 import net.minecraft.tileentity.TileEntity
 import net.minecraftforge.common.util.ForgeDirection
 import net.minecraftforge.fluids._
@@ -31,7 +34,16 @@ class TileFluidConductor extends TileEntity with IFluidHandler {
     nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound))
   }
 
+  override def getDescriptionPacket: Packet = new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, ChainableTag.newInstance
+  .tag("tank", tank.writeToNBT(new NBTTagCompound)).as)
+
+  override def onDataPacket(net: NetworkManager, pkt: S35PacketUpdateTileEntity): Unit = {
+    val nbt = pkt.func_148857_g
+    tank.readFromNBT(nbt.getCompoundTag("tank"))
+  }
+
   override def updateEntity = {
+    if(!getWorldObj.isRemote) getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
     ForgeDirection.VALID_DIRECTIONS.foreach(o => {
       getWorldObj.getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ) match {
         case to: TileFluidConductor => transferFluid(to)
@@ -42,7 +54,7 @@ class TileFluidConductor extends TileEntity with IFluidHandler {
           } else {
             if (tank.getFluid != null) {
               val fluid = tank.getFluid.copy
-              fluid.amount /= 2
+              fluid.amount = Math.ceil(fluid.amount / 2.0).toInt
               tank.drain(handler.fill(opposite, fluid, true), true)
             }
           }
@@ -55,8 +67,8 @@ class TileFluidConductor extends TileEntity with IFluidHandler {
   def transferFluid(to: TileFluidConductor) = {
     if (tank.getFluid != null) {
       to.tank.getFluid match {
-        case f if f == null => to.tank.fill(tank.drain(tank.getFluidAmount / 2, true), true)
-        case f if tank.getFluid.isFluidEqual(f) && tank.getFluidAmount > f.amount => to.tank.fill(tank.drain((tank.getFluidAmount - f.amount) / 2, true), true)
+        case f if f == null => to.tank.fill(tank.drain(Math.ceil(tank.getFluidAmount / 5D).toInt, true), true)
+        case f if tank.getFluid.isFluidEqual(f) && tank.getFluidAmount > f.amount => to.tank.fill(tank.drain(Math.ceil((tank.getFluidAmount - f.amount) / 5D).toInt, true), true)
         case _ =>
       }
     }

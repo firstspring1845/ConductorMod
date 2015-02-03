@@ -2,6 +2,7 @@ package net.firsp.mods.conductor
 
 import java.util
 
+import net.firsp.lib.ChainableTag
 import net.minecraft.block.Block
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase

@@ -1,6 +1,6 @@
 package net.firsp.mods.conductor
 
-import cpw.mods.fml.common.Mod
+import cpw.mods.fml.common.{SidedProxy, Mod}
 import cpw.mods.fml.common.Mod.{Instance, EventHandler}
 import cpw.mods.fml.common.event.{FMLServerStoppingEvent, FMLServerStartingEvent, FMLInitializationEvent}
 import cpw.mods.fml.common.registry.GameRegistry
@@ -99,6 +99,7 @@ class ConductorMod {
       Blocks.redstone_block,
       Character.valueOf('g'),
       Blocks.glass)
+    ConductorMod.proxy.registerTESR
   }
 
   @EventHandler
@@ -111,4 +112,6 @@ class ConductorMod {
 object ConductorMod extends ConductorMod {
   var instance: ConductorMod = _
   var anchor: BlockAnchor = _
+  @SidedProxy(clientSide = "net.firsp.mods.conductor.ClientProxy", serverSide = "net.firsp.mods.conductor.CommonProxy")
+  var proxy:CommonProxy = _
 }
