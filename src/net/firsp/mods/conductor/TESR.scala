@@ -2,11 +2,11 @@ package net.firsp.mods.conductor
 
 import net.minecraft.client.renderer.texture.TextureMap
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer
-import net.minecraft.client.renderer.{OpenGlHelper, RenderBlocks, RenderHelper, Tessellator}
+import net.minecraft.client.renderer.{OpenGlHelper, RenderHelper, Tessellator}
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.IIcon
 import net.minecraftforge.common.util.ForgeDirection
-import net.minecraftforge.fluids.{FluidStack, IFluidHandler}
+import net.minecraftforge.fluids.{FluidRegistry, FluidStack, IFluidHandler}
 import org.lwjgl.opengl.GL11
 
 object TESR extends TileEntitySpecialRenderer {
@@ -67,12 +67,15 @@ object TESR extends TileEntitySpecialRenderer {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
       }
       case f: TileFluidConductor => {
-        val r = RenderBlocks.getInstance
-        val d = net.minecraftforge.common.util.ForgeDirection.DOWN
         f.tank.getFluid match {
           case fs: FluidStack => {
             bindTexture(TextureMap.locationBlocksTexture)
-            val icon = fs.getFluid.getStillIcon
+            println(fs.getFluid)
+            val icon = try{
+              fs.getFluid.getStillIcon
+            }catch{
+              case _ => FluidRegistry.WATER.getStillIcon
+            }
             val v = ForgeDirection.VALID_DIRECTIONS
             val doRenderSide = v.map(o => f.getWorldObj.getTileEntity(f.xCoord + o.offsetX, f.yCoord + o.offsetY, f.zCoord + o.offsetZ).isInstanceOf[IFluidHandler])
             val internalDoRenderSide = doRenderSide.map(_ ^ true)
