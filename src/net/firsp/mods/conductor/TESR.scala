@@ -70,7 +70,6 @@ object TESR extends TileEntitySpecialRenderer {
         f.tank.getFluid match {
           case fs: FluidStack => {
             bindTexture(TextureMap.locationBlocksTexture)
-            println(fs.getFluid)
             val icon = try{
               fs.getFluid.getStillIcon
             }catch{
