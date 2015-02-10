@@ -59,9 +59,9 @@ class ConductorMod {
     GameRegistry.registerBlock(capacitor, classOf[ItemEnergyCapacitor], "firsp_capacitor")
 
     GameRegistry.addShapedRecipe(new ItemStack(fConductor, 8),
-      "iii",
-      "igi",
-      "iii",
+      "ggg",
+      "gig",
+      "ggg",
       Character.valueOf('i'),
       Items.iron_ingot,
       Character.valueOf('g'),
@@ -99,6 +99,7 @@ class ConductorMod {
       Blocks.redstone_block,
       Character.valueOf('g'),
       Blocks.glass)
+
     ConductorMod.proxy.registerTESR
   }
 
