@@ -20,6 +20,7 @@ class ConductorMod {
     GameRegistry.registerTileEntity(classOf[TileTeleportEnergyConductor], "firsp:teleportEnergyConductor")
     GameRegistry.registerTileEntity(classOf[TileTeleportFluidConductor], "firsp:teleportFluidConductor")
     GameRegistry.registerTileEntity(classOf[TileEnergyCapacitor], "firsp:energyCapacitor")
+    GameRegistry.registerTileEntity(classOf[TilePump], "firsp:pump")
 
     val eConductor = new BlockConductor({
       new TileEnergyConductor
@@ -57,6 +58,9 @@ class ConductorMod {
 
     val capacitor = new BlockEnergyCapacitor
     GameRegistry.registerBlock(capacitor, classOf[ItemEnergyCapacitor], "firsp_capacitor")
+
+    val pump = new BlockPump
+    GameRegistry.registerBlock(pump, "firsp_pump")
 
     GameRegistry.addShapedRecipe(new ItemStack(fConductor, 8),
       "ggg",
@@ -99,6 +103,14 @@ class ConductorMod {
       Blocks.redstone_block,
       Character.valueOf('g'),
       Blocks.glass)
+    GameRegistry.addShapedRecipe(new ItemStack(pump),
+    "igi",
+    "ggg",
+    "igi",
+    Character.valueOf('i'),
+    Items.iron_ingot,
+    Character.valueOf('g'),
+    Blocks.glass)
 
     ConductorMod.proxy.registerTESR
   }

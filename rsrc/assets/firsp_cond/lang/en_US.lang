@@ -3,3 +3,5 @@ tile.econd_t.name=Teleport Energy Conductor
 tile.fcond.name=Fluid Conductor
 tile.fcond_t.name=Teleport Fluid Conductor
 tile.firsp_capacitor.name=Energy Capacitor
+tile.firsp_anchor.name=Chunk Anchor
+tile.conductor.pump.name=Fluid Pump
