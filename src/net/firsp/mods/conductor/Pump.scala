@@ -75,12 +75,12 @@ class TilePump extends TileEntity with IFluidHandler with IEnergyHandler {
   override def updateEntity: Unit = {
     val w = getWorldObj
     if (!w.isRemote) {
-      if (tank.getFluid != null) {
-        ForgeDirection.VALID_DIRECTIONS.foreach(o => w.getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ) match {
-          case handler: IFluidHandler => tank.drain(handler.fill(o.getOpposite, tank.getFluid, true), true)
-          case _ =>
-        })
-      }
+      ForgeDirection.VALID_DIRECTIONS.foreach(o => w.getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ) match {
+        case handler: IFluidHandler => if (tank.getFluid != null && tank.getFluid.getFluid != null) {
+          tank.drain(handler.fill(o.getOpposite, tank.getFluid, true), true)
+        }
+        case _ =>
+      })
       if (!validFluids.isEmpty) {
         val p = validFluids.top
         if (drainFluid(w, p)) validFluids.pop
