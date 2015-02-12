@@ -31,22 +31,24 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
 
   override def canConnectEnergy(from: ForgeDirection) = true
 
-  override def readFromNBT(nbt:NBTTagCompound) = {
+  override def readFromNBT(nbt: NBTTagCompound) = {
     super.readFromNBT(nbt)
     internalEnergy = nbt.getInteger("energy")
   }
 
-  override def writeToNBT(nbt:NBTTagCompound) = {
+  override def writeToNBT(nbt: NBTTagCompound) = {
     super.writeToNBT(nbt)
     nbt.setInteger("energy", internalEnergy)
   }
 
   override def updateEntity = {
-    if(!worldObj.isRemote) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+    if (!worldObj.isRemote) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+    val te = ForgeDirection.VALID_DIRECTIONS.map(o => getWorldObj.getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ))
+    smoothEnergy(te.collect { case t: TileEnergyConductor => t}.toList)
     ForgeDirection.VALID_DIRECTIONS.foreach(o => {
-      getWorldObj().getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ) match {
-        case to: TileEnergyConductor => transferEnergy(to)
-        case handler: IEnergyHandler => internalEnergy -= handler.receiveEnergy(o.getOpposite, internalEnergy, false)
+      te(o.ordinal) match {
+        case t: TileEnergyConductor =>
+        case handler: IEnergyHandler => handler.receiveEnergy(o.getOpposite, internalEnergy, false)
         case _ =>
       }
     })
@@ -60,7 +62,15 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
     }
   }
 
-  override def getDescriptionPacket: Packet = new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, ChainableTag.newInstance.integer("e",internalEnergy).as)
+  def smoothEnergy(e: List[TileEnergyConductor]) = {
+    val energy = internalEnergy + e.map(_.internalEnergy).sum
+    val average = energy / (e.length + 1)
+    val mod = energy % (e.length + 1)
+    internalEnergy = if(mod != 0) average + 1 else average
+    e.zipWithIndex.foreach(t => t._1.internalEnergy = if (t._2 < mod - 1) average + 1 else average)
+  }
+
+  override def getDescriptionPacket: Packet = new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, ChainableTag.newInstance.integer("e", internalEnergy).as)
 
   override def onDataPacket(net: NetworkManager, pkt: S35PacketUpdateTileEntity): Unit = {
     internalEnergy = pkt.func_148857_g.getInteger("e")
@@ -70,7 +80,7 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
 class TileTeleportEnergyConductor extends TileEnergyConductor with TeleportableTile {
   override def updateEntity = {
     super.updateEntity
-    getTeleportables.collect { case t: TileEnergyConductor => t}.foreach(transferEnergy)
+    smoothEnergy(getTeleportables.collect { case t: TileEnergyConductor => t}.toList)
   }
 
 }
