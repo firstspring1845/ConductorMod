@@ -48,7 +48,7 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
     ForgeDirection.VALID_DIRECTIONS.foreach(o => {
       te(o.ordinal) match {
         case t: TileEnergyConductor =>
-        case handler: IEnergyHandler => handler.receiveEnergy(o.getOpposite, internalEnergy, false)
+        case handler: IEnergyHandler => internalEnergy -= handler.receiveEnergy(o.getOpposite, internalEnergy, false)
         case _ =>
       }
     })
