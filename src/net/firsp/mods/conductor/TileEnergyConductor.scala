@@ -1,6 +1,6 @@
 package net.firsp.mods.conductor
 
-import cofh.api.energy.IEnergyHandler
+import cofh.api.energy.{IEnergyReceiver, IEnergyHandler}
 import net.firsp.lib.ChainableTag
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.network.{Packet, NetworkManager}
@@ -48,7 +48,7 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
     ForgeDirection.VALID_DIRECTIONS.foreach(o => {
       te(o.ordinal) match {
         case t: TileEnergyConductor =>
-        case handler: IEnergyHandler => internalEnergy -= handler.receiveEnergy(o.getOpposite, internalEnergy, false)
+        case receiver: IEnergyReceiver => internalEnergy -= receiver.receiveEnergy(o.getOpposite, internalEnergy, false)
         case _ =>
       }
     })
