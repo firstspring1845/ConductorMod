@@ -37,15 +37,15 @@ trait TeleportableTile extends TileEntity {
 
   override def validate: Unit = {
     super.validate
-    TeleportManager.teleportables.add(this)
+    if(!getWorldObj.isRemote) TeleportManager.teleportables.add(this)
   }
 
   override def invalidate: Unit = {
     super.invalidate
-    TeleportManager.teleportables.remove(this)
+    if(!getWorldObj.isRemote) TeleportManager.teleportables.remove(this)
   }
 
-  override def onChunkUnload: Unit = TeleportManager.teleportables.remove(this)
+  override def onChunkUnload: Unit = if(!getWorldObj.isRemote) TeleportManager.teleportables.remove(this)
 
   override def hashCode = xCoord ^ yCoord ^ zCoord
 }
