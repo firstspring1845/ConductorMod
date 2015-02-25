@@ -11,6 +11,8 @@ import net.minecraftforge.common.util.ForgeDirection
 import net.minecraftforge.fluids._
 
 import scala.collection.mutable
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class BlockPump extends BlockConductor({
   new TilePump
@@ -33,6 +35,7 @@ class TilePump extends TileEntity with IFluidHandler with IEnergyHandler {
 
   case class Position(x: Int, y: Int, z: Int)
 
+  var finder = Future {}
   val validFluids = mutable.Stack[Position]()
 
   override def fill(from: ForgeDirection, resource: FluidStack, doFill: Boolean): Int = 0
@@ -81,6 +84,7 @@ class TilePump extends TileEntity with IFluidHandler with IEnergyHandler {
         }
         case _ =>
       })
+      if (finder.value == None) return // can't process at finder not complete
       if (!validFluids.isEmpty) {
         val p = validFluids.top
         if (drainFluid(w, p)) validFluids.pop
@@ -90,7 +94,9 @@ class TilePump extends TileEntity with IFluidHandler with IEnergyHandler {
         case Some(y) => {
           val f = getFluid(w, Position(xCoord, y, zCoord))
           if (f != null) {
-            findFluid(w, Position(xCoord, y, zCoord), f)
+            finder = Future {
+              findFluid(w, Position(xCoord, y, zCoord), f)
+            }
             return
           }
           else if (w.getBlock(xCoord, y, zCoord) == Blocks.air && energy >= 100) {
@@ -116,8 +122,8 @@ class TilePump extends TileEntity with IFluidHandler with IEnergyHandler {
       if (!visited.contains(p)) {
         validFluids.push(p)
         visited += p
-        if (Math.sqrt(Math.pow(p.x - xCoord, 2)+Math.pow(p.z - zCoord, 2)) < 64) {
-          d.foreach(o => {
+        if (Math.sqrt(Math.pow(p.x - xCoord, 2) + Math.pow(p.z - zCoord, 2)) < 64) {
+          ForgeDirection.VALID_DIRECTIONS.foreach(o => {
             val pos = Position(p.x + o.offsetX, p.y + o.offsetY, p.z + o.offsetZ)
             if (getFluid(world, pos) == fluid) {
               find.enqueue(pos)
