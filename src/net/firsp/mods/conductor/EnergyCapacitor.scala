@@ -11,9 +11,27 @@ import net.minecraft.item.{Item, ItemStack, ItemBlock}
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.ChatComponentText
 import net.minecraft.world.World
+import net.minecraftforge.common.util.ForgeDirection
+import net.minecraftforge.fluids._
+
+import scala.collection.mutable
 
 object EnergyCapacitor {
   val MAX_CHARGED = 15000000 // One bucket fuel energy
+  val fluidEnergyMap = {
+    def getFluid(name:String) = {
+      val f = FluidRegistry.getFluid(name)
+      if(f != null) Some(f) else None
+    }
+    var l = mutable.ArrayBuffer((FluidRegistry.WATER, 1), (FluidRegistry.LAVA, 120))
+    getFluid("oil").foreach{f =>l append ((f, 150))}
+    getFluid("fuel").foreach{f =>l append ((f, 1500))}
+    getFluid("biomass").foreach{f => l append ((f, 125))}
+    getFluid("forestry.fluids.biomass").foreach{f => l append ((f, 125))}
+    getFluid("bioethanol").foreach{f => l append ((f, 600))}
+    getFluid("forestry.fluids.bioethanol").foreach{f => l append ((f, 600))}
+    l.toMap
+  }
 }
 
 class BlockEnergyCapacitor extends BlockConductor({
@@ -86,7 +104,7 @@ class ItemEnergyCapacitor(block: Block) extends ItemBlock(block) {
   }
 }
 
-class TileEnergyCapacitor extends TileEnergyConductor {
+class TileEnergyCapacitor extends TileEnergyConductor with IFluidHandler {
 
   var charged = 0
 
@@ -113,4 +131,24 @@ class TileEnergyCapacitor extends TileEnergyConductor {
     super.updateEntity
   }
 
+  override def fill(from: ForgeDirection, resource: FluidStack, doFill: Boolean): Int = {
+    if(resource != null){
+      val factor = EnergyCapacitor.fluidEnergyMap.get(resource.getFluid).getOrElse(-1)
+      if(factor == -1) return 0
+      val move = Math.min(3, Math.min((EnergyCapacitor.MAX_CHARGED - charged) / factor, resource.amount))
+      if(doFill) charged += move * factor
+      return move
+    }
+    return 0
+  }
+
+  override def drain(from: ForgeDirection, resource: FluidStack, doDrain: Boolean): FluidStack = null
+
+  override def drain(from: ForgeDirection, maxDrain: Int, doDrain: Boolean): FluidStack = null
+
+  override def canFill(from: ForgeDirection, fluid: Fluid): Boolean = FluidRegistry.LAVA == fluid
+
+  override def canDrain(from: ForgeDirection, fluid: Fluid): Boolean = false
+
+  override def getTankInfo(from: ForgeDirection): Array[FluidTankInfo] = Array(new FluidTankInfo(new FluidStack(FluidRegistry.LAVA, 1000), 1000))
 }

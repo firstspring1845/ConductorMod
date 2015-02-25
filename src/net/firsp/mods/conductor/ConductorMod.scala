@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.util.StringTranslate
 import net.minecraftforge.common.ForgeChunkManager
 
-@Mod(modid = "Conductor", modLanguage = "scala")
+@Mod(modid = "Conductor", modLanguage = "scala", dependencies = "after:BuildCraft|Energy;after:Forestry")
 class ConductorMod {
   @EventHandler
   def init(event: FMLInitializationEvent) = {
