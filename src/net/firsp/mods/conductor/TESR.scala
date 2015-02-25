@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.{OpenGlHelper, RenderHelper, Tessellator}
 import net.minecraft.tileentity.TileEntity
 import net.minecraft.util.IIcon
 import net.minecraftforge.common.util.ForgeDirection
-import net.minecraftforge.fluids.{FluidRegistry, FluidStack, IFluidHandler}
+import net.minecraftforge.fluids.{Fluid, FluidRegistry, FluidStack, IFluidHandler}
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11._
 
@@ -37,9 +37,8 @@ object TESR extends TileEntitySpecialRenderer {
         f.tank.getFluid match {
           case fs: FluidStack => {
             bindTexture(TextureMap.locationBlocksTexture)
-            val icon = try {
-              fs.getFluid.getStillIcon
-            } catch {
+            val icon = fs.getFluid match{
+              case f:Fluid => f.getStillIcon
               case _ => FluidRegistry.WATER.getStillIcon
             }
             val v = ForgeDirection.VALID_DIRECTIONS
@@ -214,4 +213,5 @@ object TESR extends TileEntitySpecialRenderer {
     glEnable(GL_CULL_FACE)
     glPopMatrix
   }
+
 }
