@@ -146,7 +146,7 @@ class TileEnergyCapacitor extends TileEnergyConductor with IFluidHandler {
 
   override def drain(from: ForgeDirection, maxDrain: Int, doDrain: Boolean): FluidStack = null
 
-  override def canFill(from: ForgeDirection, fluid: Fluid): Boolean = FluidRegistry.LAVA == fluid
+  override def canFill(from: ForgeDirection, fluid: Fluid): Boolean = EnergyCapacitor.fluidEnergyMap.get(fluid) != None
 
   override def canDrain(from: ForgeDirection, fluid: Fluid): Boolean = false
 
