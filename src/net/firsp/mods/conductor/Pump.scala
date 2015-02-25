@@ -107,20 +107,20 @@ class TilePump extends TileEntity with IFluidHandler with IEnergyHandler {
 
   def findFluid(world: World, position: Position, fluid: Fluid) = {
     validFluids.clear
-    val find = mutable.Queue((0, position))
+    val find = mutable.Queue(position)
     val visited = mutable.HashSet[Position]()
 
     val d = ForgeDirection.VALID_DIRECTIONS.filter(_ != ForgeDirection.DOWN)
     while (!find.isEmpty) {
       val p = find.dequeue
-      if (!visited.contains(p._2)) {
-        validFluids.push(p._2)
-        visited += p._2
-        if (p._1 < 64) {
+      if (!visited.contains(p)) {
+        validFluids.push(p)
+        visited += p
+        if (Math.sqrt(Math.pow(p.x - xCoord, 2)+Math.pow(p.z - zCoord, 2)) < 64) {
           d.foreach(o => {
-            val pos = Position(p._2.x + o.offsetX, p._2.y + o.offsetY, p._2.z + o.offsetZ)
+            val pos = Position(p.x + o.offsetX, p.y + o.offsetY, p.z + o.offsetZ)
             if (getFluid(world, pos) == fluid) {
-              find.enqueue((p._1 + 1, pos))
+              find.enqueue(pos)
             }
           })
         }
