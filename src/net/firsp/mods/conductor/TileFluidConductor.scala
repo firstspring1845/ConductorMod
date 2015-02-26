@@ -24,32 +24,32 @@ class TileFluidConductor extends TileEntity with IFluidHandler {
 
   override def getTankInfo(from: ForgeDirection): Array[FluidTankInfo] = Array(tank.getInfo)
 
-  override def readFromNBT(nbt:NBTTagCompound) = {
+  override def readFromNBT(nbt: NBTTagCompound) = {
     super.readFromNBT(nbt)
     tank.readFromNBT(nbt.getCompoundTag("tank"))
   }
 
-  override def writeToNBT(nbt:NBTTagCompound) = {
+  override def writeToNBT(nbt: NBTTagCompound) = {
     super.writeToNBT(nbt)
     nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound))
   }
 
   override def getDescriptionPacket: Packet = new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, ChainableTag.newInstance
-  .tag("tank", tank.writeToNBT(new NBTTagCompound)).as)
+    .tag("tank", tank.writeToNBT(new NBTTagCompound)).as)
 
   override def onDataPacket(net: NetworkManager, pkt: S35PacketUpdateTileEntity): Unit = {
     val nbt = pkt.func_148857_g
     tank.readFromNBT(nbt.getCompoundTag("tank"))
   }
 
-  override def updateEntity = {
-    if(!getWorldObj.isRemote) getWorldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+  override def updateEntity = if (!worldObj.isRemote) {
+    worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
     ForgeDirection.VALID_DIRECTIONS.foreach(o => {
-      getWorldObj.getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ) match {
+      worldObj.getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ) match {
         case to: TileFluidConductor => transferFluid(to)
         case handler: IFluidHandler => {
           val opposite = o.getOpposite
-          if (getWorldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) {
+          if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) {
             handler.drain(opposite, tank.fill(handler.drain(opposite, Integer.MAX_VALUE, false), true), true)
           } else {
             if (tank.getFluid != null) {
@@ -79,6 +79,6 @@ class TileFluidConductor extends TileEntity with IFluidHandler {
 class TileTeleportFluidConductor extends TileFluidConductor with TeleportableTile {
   override def updateEntity = {
     super.updateEntity
-    getTeleportables.collect { case t: TileFluidConductor => t}.foreach(transferFluid)
+    if(!worldObj.isRemote) getTeleportables.collect { case t: TileFluidConductor => t}.foreach(transferFluid)
   }
 }

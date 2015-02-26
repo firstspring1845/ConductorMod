@@ -41,9 +41,9 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
     nbt.setInteger("energy", internalEnergy)
   }
 
-  override def updateEntity = {
-    if (!worldObj.isRemote) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
-    val te = ForgeDirection.VALID_DIRECTIONS.map(o => getWorldObj.getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ))
+  override def updateEntity = if (!worldObj.isRemote) {
+    worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+    val te = ForgeDirection.VALID_DIRECTIONS.map(o => worldObj.getTileEntity(xCoord + o.offsetX, yCoord + o.offsetY, zCoord + o.offsetZ))
     smoothEnergy(te.collect { case t: TileEnergyConductor => t}.toList)
     ForgeDirection.VALID_DIRECTIONS.foreach(o => {
       te(o.ordinal) match {
@@ -66,7 +66,7 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
     val energy = internalEnergy + e.map(_.internalEnergy).sum
     val average = energy / (e.length + 1)
     val mod = energy % (e.length + 1)
-    internalEnergy = if(mod != 0) average + 1 else average
+    internalEnergy = if (mod != 0) average + 1 else average
     e.zipWithIndex.foreach(t => t._1.internalEnergy = if (t._2 < mod - 1) average + 1 else average)
   }
 
@@ -80,7 +80,7 @@ class TileEnergyConductor extends TileEntity with IEnergyHandler {
 class TileTeleportEnergyConductor extends TileEnergyConductor with TeleportableTile {
   override def updateEntity = {
     super.updateEntity
-    smoothEnergy(getTeleportables.collect { case t: TileEnergyConductor => t}.toList)
+    if(!worldObj.isRemote) smoothEnergy(getTeleportables.collect { case t: TileEnergyConductor => t}.toList)
   }
 
 }
