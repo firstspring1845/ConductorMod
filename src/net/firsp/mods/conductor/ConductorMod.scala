@@ -116,9 +116,6 @@ class ConductorMod {
   }
 
   @EventHandler
-  def serverStarting(event: FMLServerStartingEvent) = TeleportManager.teleportables.clear
-
-  @EventHandler
   def serverStopping(event: FMLServerStoppingEvent) = TeleportManager.teleportables.clear
 }
 
