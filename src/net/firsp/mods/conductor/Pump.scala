@@ -85,6 +85,7 @@ class TilePump extends TileEntity with IFluidHandler with IEnergyHandler {
         case _ =>
       })
       if (finder.value == None) return // can't process at finder not complete
+      while(!validFluids.isEmpty && !canDrainFluid(w, validFluids.top)) validFluids.pop
       if (!validFluids.isEmpty) {
         val p = validFluids.top
         if (drainFluid(w, p)) validFluids.pop
@@ -134,16 +135,16 @@ class TilePump extends TileEntity with IFluidHandler with IEnergyHandler {
     }
   }
 
+  def canDrainFluid(world: World, position: Position) = getFluid(world, position) != null && world.getBlockMetadata(position.x, position.y, position.z) == 0
+
   def drainFluid(world: World, position: Position): Boolean = {
     val f = getFluid(world, position)
-    if (f != null && (tank.getFluid == null || tank.getFluid.getFluid == f)) {
-      if (world.getBlockMetadata(position.x, position.y, position.z) == 0) {
-        if (energy >= 100 && tank.getCapacity - tank.getFluidAmount >= 1000) {
-          world.setBlockToAir(position.x, position.y, position.z)
-          tank.fill(new FluidStack(f, 1000), true)
-          energy -= 100
-        } else return false
-      }
+    if (tank.getFluid == null || tank.getFluid.getFluid == f) {
+      if (energy >= 100 && tank.getCapacity - tank.getFluidAmount >= 1000) {
+        world.setBlockToAir(position.x, position.y, position.z)
+        tank.fill(new FluidStack(f, 1000), true)
+        energy -= 100
+      } else return false
     }
     true
   }
