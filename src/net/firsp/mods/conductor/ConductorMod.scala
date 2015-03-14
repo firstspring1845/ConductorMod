@@ -9,6 +9,7 @@ import net.minecraft.init.{Blocks, Items}
 import net.minecraft.item.ItemStack
 import net.minecraft.util.StringTranslate
 import net.minecraftforge.common.ForgeChunkManager
+import net.minecraftforge.oredict.ShapedOreRecipe
 
 @Mod(modid = "Conductor", modLanguage = "scala", dependencies = "after:BuildCraft|Energy;after:Forestry")
 class ConductorMod {
@@ -70,6 +71,14 @@ class ConductorMod {
       Items.iron_ingot,
       Character.valueOf('g'),
       Blocks.glass)
+    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(fConductor, 8),
+      "ggg",
+      "gig",
+      "ggg",
+      Character.valueOf('i'),
+      "ingotTin",
+      Character.valueOf('g'),
+      Blocks.glass))
     GameRegistry.addShapelessRecipe(new ItemStack(eConductor, 1), fConductor, Items.redstone)
     GameRegistry.addShapedRecipe(new ItemStack(fConductorTeleport, 8),
       "fff",
@@ -111,6 +120,14 @@ class ConductorMod {
     Items.iron_ingot,
     Character.valueOf('g'),
     Blocks.glass)
+    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(pump),
+      "igi",
+      "ggg",
+      "igi",
+      Character.valueOf('i'),
+      "ingotTin",
+      Character.valueOf('g'),
+      Blocks.glass))
 
     ConductorMod.proxy.registerTESR
   }
