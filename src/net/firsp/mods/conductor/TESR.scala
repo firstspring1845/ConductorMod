@@ -81,55 +81,55 @@ object TESR extends TileEntitySpecialRenderer {
     //down
     if (doRenderSide(0)) {
       t.startDrawingQuads
-      t.addVertexWithUV(fromX, fromY, fromZ, icon.getMinU, icon.getMinV)
-      t.addVertexWithUV(toX, fromY, fromZ, icon.getMinU, icon.getMaxV)
-      t.addVertexWithUV(toX, fromY, toZ, icon.getMaxU, icon.getMaxV)
-      t.addVertexWithUV(fromX, fromY, toZ, icon.getMaxU, icon.getMinV)
+      t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromZ * 16))
+      t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromZ * 16))
+      t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toZ * 16))
+      t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toZ * 16))
       t.draw
     }
     //up
     if (doRenderSide(1)) {
       t.startDrawingQuads
-      t.addVertexWithUV(fromX, toY, fromZ, icon.getMinU, icon.getMinV)
-      t.addVertexWithUV(toX, toY, fromZ, icon.getMinU, icon.getMaxV)
-      t.addVertexWithUV(toX, toY, toZ, icon.getMaxU, icon.getMaxV)
-      t.addVertexWithUV(fromX, toY, toZ, icon.getMaxU, icon.getMinV)
+      t.addVertexWithUV(fromX, toY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromZ * 16))
+      t.addVertexWithUV(toX, toY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromZ * 16))
+      t.addVertexWithUV(toX, toY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toZ * 16))
+      t.addVertexWithUV(fromX, toY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toZ * 16))
       t.draw
     }
     //north
     if (doRenderSide(2)) {
       t.startDrawingQuads
-      t.addVertexWithUV(fromX, fromY, fromZ, icon.getMinU, icon.getMinV)
-      t.addVertexWithUV(fromX, toY, fromZ, icon.getMinU, icon.getMaxV)
-      t.addVertexWithUV(toX, toY, fromZ, icon.getMaxU, icon.getMaxV)
-      t.addVertexWithUV(toX, fromY, fromZ, icon.getMaxU, icon.getMinV)
+      t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromY * 16))
+      t.addVertexWithUV(fromX, toY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toY * 16))
+      t.addVertexWithUV(toX, toY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toY * 16))
+      t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
     }
     //south
     if (doRenderSide(3)) {
       t.startDrawingQuads
-      t.addVertexWithUV(fromX, fromY, toZ, icon.getMinU, icon.getMinV)
-      t.addVertexWithUV(fromX, toY, toZ, icon.getMinU, icon.getMaxV)
-      t.addVertexWithUV(toX, toY, toZ, icon.getMaxU, icon.getMaxV)
-      t.addVertexWithUV(toX, fromY, toZ, icon.getMaxU, icon.getMinV)
+      t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromY * 16))
+      t.addVertexWithUV(fromX, toY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toY * 16))
+      t.addVertexWithUV(toX, toY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toY * 16))
+      t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
     }
     //west
     if (doRenderSide(4)) {
       t.startDrawingQuads
-      t.addVertexWithUV(fromX, fromY, fromZ, icon.getMinU, icon.getMinV)
-      t.addVertexWithUV(fromX, toY, fromZ, icon.getMinU, icon.getMaxV)
-      t.addVertexWithUV(fromX, toY, toZ, icon.getMaxU, icon.getMaxV)
-      t.addVertexWithUV(fromX, fromY, toZ, icon.getMaxU, icon.getMinV)
+      t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(fromY * 16))
+      t.addVertexWithUV(fromX, toY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(toY * 16))
+      t.addVertexWithUV(fromX, toY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(toY * 16))
+      t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
     }
     //east
     if (doRenderSide(5)) {
       t.startDrawingQuads
-      t.addVertexWithUV(toX, fromY, fromZ, icon.getMinU, icon.getMinV)
-      t.addVertexWithUV(toX, toY, fromZ, icon.getMinU, icon.getMaxV)
-      t.addVertexWithUV(toX, toY, toZ, icon.getMaxU, icon.getMaxV)
-      t.addVertexWithUV(toX, fromY, toZ, icon.getMaxU, icon.getMinV)
+      t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(fromY * 16))
+      t.addVertexWithUV(toX, toY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(toY * 16))
+      t.addVertexWithUV(toX, toY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(toY * 16))
+      t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
     }
 
