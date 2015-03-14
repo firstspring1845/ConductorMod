@@ -73,67 +73,59 @@ object TESR extends TileEntitySpecialRenderer {
     glPushMatrix
     glPushAttrib(GL_ENABLE_BIT)
     glTranslated(x, y, z)
-    glDisable(GL_CULL_FACE)
     glDisable(GL_LIGHTING)
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glDepthMask(false)
     //down
-    if (doRenderSide(0)) {
       t.startDrawingQuads
       t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromZ * 16))
       t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromZ * 16))
       t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toZ * 16))
       t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toZ * 16))
       t.draw
-    }
     //up
-    if (doRenderSide(1)) {
+      glCullFace(GL_FRONT)
       t.startDrawingQuads
       t.addVertexWithUV(fromX, toY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromZ * 16))
       t.addVertexWithUV(toX, toY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromZ * 16))
       t.addVertexWithUV(toX, toY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toZ * 16))
       t.addVertexWithUV(fromX, toY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toZ * 16))
       t.draw
-    }
+      glCullFace(GL_BACK)
     //north
-    if (doRenderSide(2)) {
       t.startDrawingQuads
       t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromY * 16))
       t.addVertexWithUV(fromX, toY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, toY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
-    }
     //south
-    if (doRenderSide(3)) {
+      glCullFace(GL_FRONT)
       t.startDrawingQuads
       t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromY * 16))
       t.addVertexWithUV(fromX, toY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, toY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
-    }
+      glCullFace(GL_BACK)
     //west
-    if (doRenderSide(4)) {
+      glCullFace(GL_FRONT)
       t.startDrawingQuads
       t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(fromY * 16))
       t.addVertexWithUV(fromX, toY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(fromX, toY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
-    }
+      glCullFace(GL_BACK)
     //east
-    if (doRenderSide(5)) {
       t.startDrawingQuads
       t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(fromY * 16))
       t.addVertexWithUV(toX, toY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, toY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
-    }
 
-    glEnable(GL_CULL_FACE)
     glEnable(GL_LIGHTING)
     glDisable(GL_BLEND)
     glDepthMask(true)
