@@ -37,8 +37,8 @@ object TESR extends TileEntitySpecialRenderer {
         f.tank.getFluid match {
           case fs: FluidStack => {
             bindTexture(TextureMap.locationBlocksTexture)
-            val icon = fs.getFluid match{
-              case f:Fluid => f.getStillIcon
+            val icon = fs.getFluid match {
+              case f: Fluid => f.getStillIcon
               case _ => FluidRegistry.WATER.getStillIcon
             }
             val v = ForgeDirection.VALID_DIRECTIONS
@@ -48,18 +48,19 @@ object TESR extends TileEntitySpecialRenderer {
             val to = 0.5 + fs.amount / 2001D
             //internal
             drawBox(x, y, z, from, from, from, to, to, to, internalDoRenderSide, icon)
+
             //down
-            if (doRenderSide(0)) drawBox(x, y, z, from, 0.001, from, to, from, to, v.map(_ != ForgeDirection.DOWN), icon)
+            if (doRenderSide(0)) drawBox(x, y, z, from, 0.001, from, to, from, to, v.map(_ != ForgeDirection.UP), icon)
             //up
-            if (doRenderSide(1)) drawBox(x, y, z, from, to, from, to, 0.999, to, v.map(_ != ForgeDirection.UP), icon)
+            if (doRenderSide(1)) drawBox(x, y, z, from, to, from, to, 0.999, to, v.map(_ != ForgeDirection.DOWN), icon)
             //north
-            if (doRenderSide(2)) drawBox(x, y, z, from, from, 0.001, to, to, from, v.map(_ != ForgeDirection.NORTH), icon)
+            if (doRenderSide(2)) drawBox(x, y, z, from, from, 0.001, to, to, from, v.map(_ != ForgeDirection.SOUTH), icon)
             //south
-            if (doRenderSide(3)) drawBox(x, y, z, from, from, to, to, to, 0.999, v.map(_ != ForgeDirection.SOUTH), icon)
+            if (doRenderSide(3)) drawBox(x, y, z, from, from, to, to, to, 0.999, v.map(_ != ForgeDirection.NORTH), icon)
             //west
-            if (doRenderSide(4)) drawBox(x, y, z, 0.001, from, from, from, to, to, v.map(_ != ForgeDirection.WEST), icon)
+            if (doRenderSide(4)) drawBox(x, y, z, 0.001, from, from, from, to, to, v.map(_ != ForgeDirection.EAST), icon)
             //east
-            if (doRenderSide(5)) drawBox(x, y, z, to, from, from, 0.999, to, to, v.map(_ != ForgeDirection.EAST), icon)
+            if (doRenderSide(5)) drawBox(x, y, z, to, from, from, 0.999, to, to, v.map(_ != ForgeDirection.WEST), icon)
           }
           case _ =>
         }
@@ -78,13 +79,16 @@ object TESR extends TileEntitySpecialRenderer {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glDepthMask(false)
     //down
+    if (doRenderSide(0)) {
       t.startDrawingQuads
       t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromZ * 16))
       t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromZ * 16))
       t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toZ * 16))
       t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toZ * 16))
       t.draw
+    }
     //up
+    if (doRenderSide(1)) {
       glCullFace(GL_FRONT)
       t.startDrawingQuads
       t.addVertexWithUV(fromX, toY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromZ * 16))
@@ -93,14 +97,18 @@ object TESR extends TileEntitySpecialRenderer {
       t.addVertexWithUV(fromX, toY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toZ * 16))
       t.draw
       glCullFace(GL_BACK)
+    }
     //north
+    if (doRenderSide(2)) {
       t.startDrawingQuads
       t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromY * 16))
       t.addVertexWithUV(fromX, toY, fromZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, toY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
+    }
     //south
+    if (doRenderSide(3)) {
       glCullFace(GL_FRONT)
       t.startDrawingQuads
       t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(fromX * 16), icon.getInterpolatedV(fromY * 16))
@@ -109,7 +117,9 @@ object TESR extends TileEntitySpecialRenderer {
       t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toX * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
       glCullFace(GL_BACK)
+    }
     //west
+    if (doRenderSide(4)) {
       glCullFace(GL_FRONT)
       t.startDrawingQuads
       t.addVertexWithUV(fromX, fromY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(fromY * 16))
@@ -118,13 +128,16 @@ object TESR extends TileEntitySpecialRenderer {
       t.addVertexWithUV(fromX, fromY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
       glCullFace(GL_BACK)
+    }
     //east
+    if (doRenderSide(5)) {
       t.startDrawingQuads
       t.addVertexWithUV(toX, fromY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(fromY * 16))
       t.addVertexWithUV(toX, toY, fromZ, icon.getInterpolatedU(fromZ * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, toY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(toY * 16))
       t.addVertexWithUV(toX, fromY, toZ, icon.getInterpolatedU(toZ * 16), icon.getInterpolatedV(fromY * 16))
       t.draw
+    }
 
     glEnable(GL_LIGHTING)
     glDisable(GL_BLEND)
